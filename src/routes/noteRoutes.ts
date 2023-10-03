@@ -1,3 +1,4 @@
+import { verifyJWT } from "../middleware/verifyJWT"
 import {
   createNote,
   deleteNote,
@@ -7,6 +8,9 @@ import {
 import express from "express"
 
 export const noteRouter = express.Router()
+
+// @ts-ignore
+noteRouter.use(verifyJWT)
 
 noteRouter
   .route("/")

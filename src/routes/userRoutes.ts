@@ -1,3 +1,4 @@
+import { verifyJWT } from "../middleware/verifyJWT"
 import {
   createUser,
   deleteUser,
@@ -7,6 +8,9 @@ import {
 import express from "express"
 
 export const userRouter = express.Router()
+
+// @ts-ignore
+userRouter.use(verifyJWT)
 
 userRouter
   .route("/")

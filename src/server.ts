@@ -7,12 +7,15 @@ import path from "path"
 import { rootRouter } from "./routes/root"
 import { userRouter } from "./routes/userRoutes"
 import { noteRouter } from "./routes/noteRoutes"
+import { authRouter } from "./routes/authRoutes"
 
 // Middlewares
 import { logger, logEvents } from "./middleware/logger"
 import { errorHandler } from "./middleware/errorHandler"
 import cookieParser from "cookie-parser"
 import cors from "cors"
+
+// configs
 import { corsOptions } from "./config/corsOptions"
 import { connectDB } from "./config/dbConn"
 
@@ -32,6 +35,7 @@ app.use(cookieParser())
 app.use("/", express.static(path.join(__dirname, "public")))
 
 app.use("/", rootRouter)
+app.use("/auth", authRouter)
 app.use("/users", userRouter)
 app.use("/notes", noteRouter)
 

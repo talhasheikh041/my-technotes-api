@@ -40,13 +40,13 @@ export const loginController = asyncHandler(
         },
       },
       process.env.ACCESS_TOKEN_SECRET as string,
-      { expiresIn: "1m" }
+      { expiresIn: "15m" }
     )
 
     const refreshToken = jwt.sign(
       { username: foundUser.username },
       process.env.REFRESH_TOKEN_SECRET as string,
-      { expiresIn: "1d" }
+      { expiresIn: "7d" }
     )
 
     // Create secure cookie with refresh token
@@ -76,9 +76,8 @@ export const refreshController = async (req: Request, res: Response) => {
 
   jwt.verify(
     refreshToken,
-    process.env.ACCESS_TOKEN_SECRET as string,
+    process.env.REFRESH_TOKEN_SECRET as string,
     (async (err, decoded) => {
-      if (err) return res.status(403).json({ message: "Forbidden" })
       if (err) {
         res.status(403).json({ message: "Forbidden" })
         return
@@ -105,7 +104,7 @@ export const refreshController = async (req: Request, res: Response) => {
           },
         },
         process.env.ACCESS_TOKEN_SECRET as string,
-        { expiresIn: "1m" }
+        { expiresIn: "15m" }
       )
 
       res.json({ accessToken })

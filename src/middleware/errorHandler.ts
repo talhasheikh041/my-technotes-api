@@ -21,5 +21,5 @@ export const errorHandler = (
 
   const status = res.statusCode ? res.statusCode : 500 //server error
 
-  res.json({ message: err.message })
+  res.json({ message: err.message, isError: true })
 }

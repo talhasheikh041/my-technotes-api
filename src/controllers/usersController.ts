@@ -25,13 +25,16 @@ export const getAllUsers = asyncHandler(async (req: Request, res: Response) => {
 export const createUser = asyncHandler(async (req: Request, res: Response) => {
   const { username, password, roles } = req.body
 
-  if (!username || !password || !Array.isArray(roles) || !roles.length) {
+  if (!username || !password) {
     res.status(400).json({ message: "All input fields are required!" })
     return
   }
 
   // find duplicate
-  const duplicate = await UserModel.findOne({ username }).lean().exec()
+  const duplicate = await UserModel.findOne({ username })
+    .collation({ locale: "en", strength: 2 })
+    .lean()
+    .exec()
   if (duplicate) {
     res.status(409).json({ message: "Username already present" })
     return
@@ -41,11 +44,16 @@ export const createUser = asyncHandler(async (req: Request, res: Response) => {
   const hashedPassword = await bcrypt.hash(password, 10) // salt rounds
 
   // create and store new user
-  const newUser = await UserModel.create({
-    username,
-    password: hashedPassword,
-    roles,
-  })
+  const userObject =
+    !Array.isArray(roles) || !roles.length
+      ? { username, password: hashedPassword }
+      : {
+          username,
+          password: hashedPassword,
+          roles,
+        }
+
+  const newUser = await UserModel.create(userObject)
 
   if (newUser) {
     res.status(201).json({ message: `New user ${username} created!` })
@@ -79,7 +87,10 @@ export const updateUser = asyncHandler(async (req: Request, res: Response) => {
   }
 
   // find duplicate
-  const duplicate = await UserModel.findOne({ username }).lean().exec()
+  const duplicate = await UserModel.findOne({ username })
+    .collation({ locale: "en", strength: 2 })
+    .lean()
+    .exec()
   // Allow updates to the original user
   if (duplicate && duplicate._id.toString() !== id) {
     res.status(409).json({ message: "Username already present" })

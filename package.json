@@ -2,13 +2,20 @@
   "name": "technotes",
   "version": "1.0.0",
   "description": "technotes MERN Project",
-  "main": "server.js",
+  "main": "server.ts",
   "scripts": {
     "dev": "nodemon",
     "build": "rimraf dist && tsc",
     "start": "node dist/server.js",
+    "ts.check": "tsc --project tsconfig.json",
+    "add-build": "git add dist",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "pre-commit": [
+    "ts.check",
+    "build",
+    "add-build"
+  ],
   "keywords": [],
   "author": "",
   "license": "ISC",
